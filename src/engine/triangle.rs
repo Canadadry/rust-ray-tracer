@@ -1,6 +1,5 @@
 use crate::math::vector3::Vec3;
 use crate::math::matrix3::Mat3;
-use crate::math::Point3;
 
 #[derive(Debug)]
 pub struct Triangle{
@@ -10,10 +9,10 @@ pub struct Triangle{
 }
 
 
-impl{
+impl Triangle{
 	pub fn new(p1:&Vec3,p2:&Vec3,p3:&Vec3) -> Triangle
 	{
-		Triangle(p1.clone(),p2.clone(),p3.clone())
+		Triangle{p1:p1.clone(),p2:p2.clone(),p3:p3.clone()}
 	}
 	pub fn intersect(direction:&Vec3,origine:&Vec3) -> bool
 	{

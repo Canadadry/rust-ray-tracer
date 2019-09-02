@@ -30,7 +30,7 @@ impl Mat3 {
 			0.0, 0.0, 1.0,
 		])
     }  
-	pub fn from_basis(v1:&Vec3,v2:Vec3,v3:Vec3) -> Mat3
+	pub fn from_basis(v1:&Vec3,v2:&Vec3,v3:&Vec3) -> Mat3
 	{
 		Mat3::from(&[
 			v1.x, v2.x, v3.x,

@@ -1,5 +1,5 @@
-use crate::math::Vec3;
-use crate::math::Mat4;
+use crate::math::vector3::Vec3;
+use crate::math::matrix4::Mat4;
 
 // const W : 16;
 // const H : 16;
@@ -7,7 +7,7 @@ use crate::math::Mat4;
 
 #[derive(Debug)]
 pub struct Camera{
-	position:Vec3, 
+	pub position:Vec3, 
 	direction:Vec3, 
 	up:Vec3,
 	fov_x:f64
@@ -50,5 +50,35 @@ impl Camera{
 			}
 		}
 		ray_list
+	}
+}
+
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn test_new() {
+		let p = Vec3::new(0.0,0.0,0.0);
+		let d = Vec3::new(1.0,0.0,0.0);
+		let u = Vec3::new(0.0,0.0,1.0);
+		let fov = 90.0;
+
+		let cam = Camera::new(&p,&d,&u,fov);
+		
+		assert_eq!(p.x,cam.position.x);
+		assert_eq!(p.y,cam.position.y);
+		assert_eq!(p.z,cam.position.z);
+
+		assert_eq!(d.x,cam.direction.x);
+		assert_eq!(d.y,cam.direction.y);
+		assert_eq!(d.z,cam.direction.z);
+
+		assert_eq!(u.x,cam.up.x);
+		assert_eq!(u.y,cam.up.y);
+		assert_eq!(u.z,cam.up.z);
+
+		assert_eq!(fov,cam.fov_x);
 	}
 }
