@@ -3,140 +3,147 @@ use crate::math::vector3::Vec3;
 #[derive(Debug)]
 pub struct Mat3
 {
-	pub m11:f64,
-	pub m12:f64,
-	pub m13:f64,
-	pub m21:f64,
-	pub m22:f64,
-	pub m23:f64,
-	pub m31:f64,
-	pub m32:f64,
-	pub m33:f64,
+	pub coef:[f64;9]
 }
 
 impl Mat3 {
-	pub fn new(m11:f64,m12:f64,m13:f64,m21:f64,m22:f64,m23:f64,m31:f64,m32:f64,m33:f64) -> Mat3
+	pub fn new() -> Mat3
 	{
 		Mat3 {
-			m11, m12, m13,
-			m21, m22, m23,
-			m31, m32, m33
+			coef:[0.0;9]
 		}
 	}
-	pub fn fromBasis(v1:&Vec3,v2:Vec3,v3:Vec3) -> Mat3
+	pub fn from(coef:&[f64;9]) -> Mat3
 	{
-		Mat3::new(
-			v1.x, v2.x, v3.x,
-			v1.y, v2.y, v3.y,
-			v1.z, v2.z, v3.z,
-		)
+		let mut mat = Mat3::new();
+		for i in 0..9
+		{
+			mat.coef[i] = coef[i];
+		}
+		mat
 	}
     pub fn identity() -> Mat3
     { 
-    	Mat3::new(
-    		1.0, 0.0, 0.0,
-    		0.0, 1.0, 0.0,
-    		0.0, 0.0, 1.0,
-    	)
-    }   
+		Mat3::from(&[
+			1.0, 0.0, 0.0,
+			0.0, 1.0, 0.0,
+			0.0, 0.0, 1.0,
+		])
+    }  
+	pub fn from_basis(v1:&Vec3,v2:Vec3,v3:Vec3) -> Mat3
+	{
+		Mat3::from(&[
+			v1.x, v2.x, v3.x,
+			v1.y, v2.y, v3.y,
+			v1.z, v2.z, v3.z,
+		])
+	}
     pub fn clone(&self) -> Mat3 
     { 
-    	Mat3::new(
-    		self.m11, self.m12, self.m13,
-    		self.m11, self.m22, self.m23,
-    		self.m11, self.m32, self.m33,
-    	)
+    	Mat3::from(&self.coef)
     }
-    pub fn add(&mut self,m:&Mat3)
+
+    pub fn add(& self,m:&Mat3) -> Mat3
     {
-		self.m11 += m.m11;
-		self.m12 += m.m12;
-		self.m13 += m.m13;
-		self.m21 += m.m21;
-		self.m22 += m.m22;
-		self.m23 += m.m23;
-		self.m31 += m.m31;
-		self.m32 += m.m32;
-		self.m33 += m.m33;
+		let mut out = Mat3::new();
+		for i in 0..9
+		{
+			out.coef[i] = self.coef[i] + m.coef[i];
+		}
+		out
     }
-    pub fn sub(&mut self,m:&Mat3)
+    pub fn sub(& self,m:&Mat3) -> Mat3
     {
-		self.m11 -= m.m11;
-		self.m12 -= m.m12;
-		self.m13 -= m.m13;
-		self.m21 -= m.m21;
-		self.m22 -= m.m22;
-		self.m23 -= m.m23;
-		self.m31 -= m.m31;
-		self.m32 -= m.m32;
-		self.m33 -= m.m33;
+		let mut out = Mat3::new();
+		for i in 0..9
+		{
+			out.coef[i] = self.coef[i] - m.coef[i];
+		}
+		out
     }
-    pub fn div(&mut self,s:f64)
+    pub fn div(& self,s:f64) -> Mat3
     {
-		self.m11 /= s;
-		self.m12 /= s;
-		self.m13 /= s;
-		self.m21 /= s;
-		self.m22 /= s;
-		self.m23 /= s;
-		self.m31 /= s;
-		self.m32 /= s;
-		self.m33 /= s;
+		let mut out = Mat3::new();
+		for i in 0..9
+		{
+			out.coef[i] = self.coef[i] / s;
+		}
+		out
     }
-    pub fn mulMat(&self,m:&Mat3) -> Mat3
+    pub fn mul_mat(&self,m:&Mat3) -> Mat3
     {
-    	Mat3::new(
-			m.m11*self.m11+m.m21*self.m12+m.m31*self.m13,
-			m.m12*self.m11+m.m22*self.m12+m.m32*self.m13,
-			m.m13*self.m11+m.m23*self.m12+m.m33*self.m13,
-			m.m11*self.m21+m.m21*self.m22+m.m31*self.m23,
-			m.m12*self.m21+m.m22*self.m22+m.m32*self.m23,
-			m.m13*self.m21+m.m23*self.m22+m.m33*self.m23,
-			m.m11*self.m31+m.m21*self.m32+m.m31*self.m33,
-			m.m12*self.m31+m.m22*self.m32+m.m32*self.m33,
-			m.m13*self.m31+m.m23*self.m32+m.m33*self.m33
+    	let mut out = Mat3::new();
+
+		for k in 0..3 
+		{
+			for j in 0..3
+			{
+				for i in 0..3
+				{
+					out.coef[3 * j + k] += self.coef[3 * j + i] * m.coef[3 * i + k];
+				}
+			}
+		}
+		out
+    }    
+    pub fn mul_vec3(&self,v:&Vec3) -> Vec3
+    {
+		let mut v_as_mat = Mat3::new();
+
+		v_as_mat.coef[0] = v.x;
+		v_as_mat.coef[1] = v.y;
+		v_as_mat.coef[2] = v.z;
+
+		let out_mat = self.mul_mat(&v_as_mat);
+		Vec3::new(
+			out_mat.coef[0],
+			out_mat.coef[1],
+			out_mat.coef[2]
 		)
     }
     pub fn det(&self) -> f64
     {
-    	  self.m11*self.m22*self.m33
-		- self.m11*self.m23*self.m32
-		- self.m12*self.m21*self.m33
-		+ self.m12*self.m23*self.m31
-		+ self.m13*self.m21*self.m32
-		- self.m13*self.m22*self.m31	
+    	  self.coef[0]*self.coef[4]*self.coef[8]
+		- self.coef[0]*self.coef[5]*self.coef[7]
+		- self.coef[1]*self.coef[3]*self.coef[8]
+		+ self.coef[1]*self.coef[5]*self.coef[6]
+		+ self.coef[2]*self.coef[3]*self.coef[7]
+		- self.coef[2]*self.coef[4]*self.coef[6]	
     }
 
     pub fn inv(&self) -> Option<Mat3>
     {
     	let det = self.det();
     	if det == 0.0 { return None; }
-    	let mut inv = Mat3::new(
-    		self.m22*self.m33-self.m23*self.m32,
-			self.m13*self.m32-self.m12*self.m33,
-			self.m12*self.m23-self.m13*self.m22,
-			self.m23*self.m31-self.m21*self.m33,
-			self.m11*self.m33-self.m13*self.m31,
-			self.m13*self.m21-self.m11*self.m23,
-			self.m21*self.m32-self.m22*self.m31,
-			self.m12*self.m31-self.m11*self.m32,
-			self.m11*self.m22-self.m12*self.m21
-    	);
-		inv.div(det);
+    	let mut inv = Mat3::from(&[
+    		self.coef[4]*self.coef[8]-self.coef[5]*self.coef[7],
+			self.coef[2]*self.coef[7]-self.coef[1]*self.coef[8],
+			self.coef[1]*self.coef[5]-self.coef[2]*self.coef[4],
+			self.coef[5]*self.coef[6]-self.coef[3]*self.coef[8],
+			self.coef[0]*self.coef[8]-self.coef[2]*self.coef[6],
+			self.coef[2]*self.coef[3]-self.coef[0]*self.coef[5],
+			self.coef[3]*self.coef[7]-self.coef[4]*self.coef[6],
+			self.coef[1]*self.coef[6]-self.coef[0]*self.coef[7],
+			self.coef[0]*self.coef[4]-self.coef[1]*self.coef[3]
+    	]);
+		inv = inv.div(det);
 		return Some(inv);
     }
-    pub fn transpose(&self) -> Mat3
-    {
-    	Mat3::new(
-    		self.m11,
-			self.m21,
-			self.m31,
-			self.m12,
-			self.m22,
-			self.m32,
-			self.m13,
-			self.m23,
-			self.m33
-    	)
-    }
+}
+
+
+
+#[cfg(test)]
+mod tests {
+	use super::*;
+
+	#[test]
+	fn test_new() {
+		let m = Mat3::new();
+		
+		for i in m.coef.iter()
+		{
+			assert_eq!(0.0,*i);
+		}
+	}
 }

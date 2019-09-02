@@ -1,4 +1,5 @@
 use crate::math::Vec3;
+use crate::math::Mat4;
 
 // const W : 16;
 // const H : 16;
@@ -22,34 +23,32 @@ impl Camera{
 			fov_x:f
 		}
 	}
-	pub fn getRays(&self) -> [Vec3;0]
+	pub fn get_rays(&self,columns:u32,rows:u32) -> Vec<Vec3>
 	{
-		[]
-		// rayList.clear();
+		let mut ray_list:Vec<Vec3> = Vec::new();
 
-		// double ratio = (double)column/(double)row;
+		let ratio   = (columns as f64)/(rows as f64);
 
-		// Vector3 left = m_up.crossProduct(m_eyeDirection);
-		// left.normalise();
-		// Vector3 up = m_eyeDirection.crossProduct(left);
-		// up.normalise();
+		let mut left = self.up.cross(&self.direction);
+		left = left.div(left.norm());
+		let mut up = self.direction.cross(&left);
+		up = up.div(up.norm());
 
-		// Vector3 ray;
-		// Matrix4 v_rotation,rotation;
-		// rotation.loadIdentity();
-		// for(double j = 0; j<row ; j++) //vertical
-		// {
-		// 	double v_rot = j*m_fovx/ratio/(row-1)-m_fovx/ratio/2.0;
-		// 	v_rotation = Matrix4::rotationMatrix(v_rot,left);
-		// 	ray = v_rotation*m_eyeDirection;
+		for j in 0..rows
+		{
+			let j = j as f64;
+			let v_rot_angle  = j*self.fov_x/ratio/((rows as f64) -1.0)-self.fov_x/ratio/2.0;
+			let v_rot_matrix = Mat4::rotation(&left,v_rot_angle);
+			let ray = v_rot_matrix.mul_vec3(&self.direction);
 
-		// 	for(double i = 0; i<column ; i++) // horizontal
-		// 	{
-		// 		double h_rot = i*m_fovx/(column-1)-m_fovx/2.0;
-		// 		rotation = v_rotation*Matrix4::rotationMatrix(h_rot,up);
-		// 		ray = rotation*m_eyeDirection;
-		// 		rayList.push_back(ray);
-		// 	}
-		// }
+			for i in 0..columns
+			{
+				let i = i as f64;
+				let h_rot_angle  = i*self.fov_x/((columns as f64)-1.0)-self.fov_x/2.0;
+				let h_rot_matrix = Mat4::rotation(&up,h_rot_angle);
+				ray_list.push(h_rot_matrix.mul_vec3(&ray));
+			}
+		}
+		ray_list
 	}
 }

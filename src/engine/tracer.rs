@@ -1,49 +1,51 @@
 use crate::engine::camera::Camera;
 
-fn render(camera:&Camera)
+
+#[derive(Copy, Clone)]
+struct Pixel(u8,u8,u8,u8);
+
+impl Pixel {
+    pub fn red()   -> Pixel { Pixel(255,  0,  0,255)}
+    pub fn bleck() -> Pixel { Pixel(  0,  0,  0,255)}
+}
+
+fn triangleIntersect(triangle:&[Vec3;3],origin:&Vec3,ray:&Vec3) -> bool
 {
-	// 	if(m_scene.size()>0)
-	// {
-	// 	std::vector<Vector3> rayList;
-	// 	camera.populateRayListToCast(rayList,outImage.width,outImage.height);
-	// 	double minDist = DBL_MAX;
-	// 	Color colorForMinDist(Color::black);
-	// 	Object* currentObject;
-	// 	char* outImageData = outImage.data();
-	// 	for(int j=0;j<outImage.height;j++)
-	// 	{
-	// 		for(int i=0;i<outImage.width;i++)
-	// 		{
-	// 			minDist = DBL_MAX;
-	// 			for(unsigned int k=0;k<m_scene.size();k++)
-	// 			{
-	// 				currentObject = m_scene[k];
-	// 				if(currentObject->instersect(rayList[i+j*outImage.width],camera.getPosition()))
-	// 				{
-	// 					if(minDist > currentObject->lastIntersectionPoint.getDistanceTo(camera.getPosition()) )
-	// 					{
-	// 						minDist = currentObject->lastIntersectionPoint.getDistanceTo(camera.getPosition()) ;
-	// 						colorForMinDist = currentObject->computeColorAtPoint(currentObject->lastIntersectionPoint);
-	// 					}
-	// 				}
-	// 			}
-	// 			if(minDist < DBL_MAX)
-	// 			{
-	// 				outImageData[(i+j*outImage.width)*4+0] = colorForMinDist.r;
-	// 				outImageData[(i+j*outImage.width)*4+1] = colorForMinDist.g;
-	// 				outImageData[(i+j*outImage.width)*4+2] = colorForMinDist.b;
-	// 				outImageData[(i+j*outImage.width)*4+3] = colorForMinDist.a;
-	// 			}
-	// 			else
-	// 			{
-	// 				outImageData[(i+j*outImage.width)*4+0] = m_backgroundColor.r;
-	// 				outImageData[(i+j*outImage.width)*4+1] = m_backgroundColor.g;
-	// 				outImageData[(i+j*outImage.width)*4+2] = m_backgroundColor.b;
-	// 				outImageData[(i+j*outImage.width)*4+3] = m_backgroundColor.a;
-	// 			}
+	let axe1 = triangle[0].sub(origin);
+	let axe2 = triangle[1].sub(origin);
+	let axe3 = triangle[2].sub(origin);
 
-	// 		}
-	// 	}
-	// }
+	let basis = Mat3::fromBasis(axe1,axe2,axe3).inverse();
+	return match basis {
+		None => false,
+		Some(basis) => {
+			let ray = basis.mulVec3(ray);
+			(ray.x >= 0 && ray.y >= 0 && ray.z >= 0);
+		}
+	}
+}
 
+fn render(mesh:&Vec<[Vec3;3]>camera:&Camera)
+{
+	let size:u32 = 16;
+	let rays = camera.getRays(size,size);
+	let pr:f64 = 20.0;
+	let out:Vec<Pixel> = Vec::new();
+
+	for j in [..size]
+	{
+		for i in [..size]
+		{
+			for triangle in mesh
+			{
+				if triangleIntersect(triangle,rays[j*size+i])
+				{
+					out.push(Pixel::red());
+				}
+				else {
+					out.push(Pixel::black());
+				}
+			}
+		}		
+	}
 }
