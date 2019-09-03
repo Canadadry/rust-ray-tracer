@@ -73,7 +73,7 @@ pub fn to_engine(config:&ConfigData) -> (Tracer,Vec::<[Vec3;3]>)
         let mut v2 = Vec3::null();
         let mut v3 = Vec3::null();
 
-        if let Some(v) = config.scene.vertices.get(face.0 as usize) {
+        if let Some(v) = config.scene.vertices.get((face.0-1) as usize) {
             v1.x = v.0;
             v1.y = v.1;
             v1.z = v.2;
@@ -82,7 +82,7 @@ pub fn to_engine(config:&ConfigData) -> (Tracer,Vec::<[Vec3;3]>)
             continue;
         };
 
-        if let Some(v) = config.scene.vertices.get(face.1 as usize) {
+        if let Some(v) = config.scene.vertices.get((face.1-1) as usize) {
             v2.x = v.0;
             v2.y = v.1;
             v2.z = v.2;
@@ -91,7 +91,7 @@ pub fn to_engine(config:&ConfigData) -> (Tracer,Vec::<[Vec3;3]>)
             continue;
         };
 
-        if let Some(v) = config.scene.vertices.get(face.2 as usize) {
+        if let Some(v) = config.scene.vertices.get((face.2-1) as usize) {
             v3.x = v.0;
             v3.y = v.1;
             v3.z = v.2;
