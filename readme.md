@@ -1,3 +1,14 @@
 # ray_tracer
 
 A small ray tracer written in rust to help me learn this language
+
+You can play with the `in.yml` file is pretty easy to understrand its content. 
+
+When launching `cargo run` it will read your configuration and render the scene in `out.png`
+
+There is no optimisation done. So it's slow. And does not use mulithreading. 
+
+#todo
+
+Add material (color, light, reflection)
+Correct fish eye effect 

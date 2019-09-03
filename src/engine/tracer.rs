@@ -46,9 +46,9 @@ impl Tracer{
 		let rays = self.cam.get_rays(self.screen.0,self.screen.1);
 		let mut out:Vec<Pixel> = Vec::<Pixel>::with_capacity(self.screen.0*self.screen.1);
 
-		for j in 0..self.screen.0
+		for j in 0..self.screen.1
 		{
-			for i in 0..self.screen.1
+			for i in 0..self.screen.0
 			{
 				let mut pixel = Pixel::black();
 				for triangle in mesh
