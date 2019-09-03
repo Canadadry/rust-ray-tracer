@@ -50,17 +50,15 @@ impl Tracer{
 		{
 			for i in 0..self.screen.1
 			{
+				let mut pixel = Pixel::black();
 				for triangle in mesh
 				{
 					if Tracer::triangle_intersect(triangle,&self.cam.position,&rays[j*self.screen.0+i])
 					{
-						out.push(Pixel::white());
-					}
-					else
-					{
-						out.push(Pixel::black());
+						pixel = Pixel::white();
 					}
 				}
+				out.push(pixel);
 			}		
 		}
 		out
