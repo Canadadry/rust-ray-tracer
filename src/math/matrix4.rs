@@ -117,7 +117,7 @@ impl Mat4 {
 		v_as_mat.coef[4 * 3] = 1.0;
 
 		let out_mat = self.mul_mat(&v_as_mat);
-		println!("{:?}",out_mat );
+		
 		Vec3::new(
 			out_mat.coef[4 * 0] / out_mat.coef[4 * 3],
 			out_mat.coef[4 * 1] / out_mat.coef[4 * 3],

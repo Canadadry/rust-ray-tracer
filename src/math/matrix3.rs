@@ -314,10 +314,7 @@ mod tests {
 
 		let out = m.inv();
 
-		for i in 0..m.coef.len()
-		{
-			assert!(out.is_none());
-		}
+		assert!(out.is_none());
 	}
 	// computation from 
 	// https://www.symbolab.com/solver/matrix-determinant-calculator/%5Cdet%20%5Cbegin%7Bpmatrix%7D1%20%26%202%20%26%203%20%5C%5C4%20%26%205%20%26%206%20%5C%5C7%20%26%208%20%26%209%5Cend%7Bpmatrix%7D?or=ex

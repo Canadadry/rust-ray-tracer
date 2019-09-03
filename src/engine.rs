@@ -1,3 +1,2 @@
-mod camera;
-mod tracer;
-mod triangle;
+pub mod camera;
+pub mod tracer;
