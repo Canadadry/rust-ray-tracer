@@ -17,4 +17,4 @@ There is no optimisation done. So it's slow. And does not use mulithreading.
 
 # current output
 
-![Alt text](out.jpg?raw=true "Current output")
+![Alt text](out.png?raw=true "Current output")
