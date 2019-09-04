@@ -8,9 +8,13 @@ When launching `cargo run` it will read your configuration and render the scene 
 
 There is no optimisation done. So it's slow. And does not use mulithreading. 
 
-#todo
+#todo (or not)
 
 - [ ] Add material color
 - [ ] Add light system (DOING)
 - [ ] reflection
 - [ ] Correct fish eye effect 
+
+# current output
+
+![Alt text](out.jpg?raw=true "Current output")
