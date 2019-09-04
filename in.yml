@@ -4,8 +4,8 @@ camera:
   up:       [  0, 1, 0 ]
   fov:      70
   screen:
-    width:  800
-    height: 600
+    width:  400
+    height: 300
 
 scene:
   vertices: 

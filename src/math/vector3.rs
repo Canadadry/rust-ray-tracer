@@ -58,7 +58,10 @@ impl Vec3 {
 	{
 		self.dot(self).sqrt()
 	}
-
+	pub fn normalize(&self) -> Vec3
+	{
+		self.div(self.dot(self).sqrt())
+	}
 	pub fn project_on(&self,v:&Vec3) -> Vec3
 	{	
 		let mut projection = v.clone();

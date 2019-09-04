@@ -10,5 +10,7 @@ There is no optimisation done. So it's slow. And does not use mulithreading.
 
 #todo
 
-Add material (color, light, reflection)
-Correct fish eye effect 
+- [ ] Add material color
+- [ ] Add light system (DOING)
+- [ ] reflection
+- [ ] Correct fish eye effect 
