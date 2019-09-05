@@ -1,5 +1,6 @@
 use super::engine::tracer::Tracer;
 use super::engine::camera::Camera as EngineCam;
+use super::engine::tracer::Pixel;
 use super::math::vector3::Vec3;
 
 use std::fs::File;
@@ -15,7 +16,9 @@ pub struct Face (u32,u32,u32);
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Scene {
     vertices: Vec::<Vertex>,
-    faces   : Vec::<Face>
+    faces   : Vec::<Face>,
+    light_direction : Vertex,
+    background_color : (u8,u8,u8,u8)
 }
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
@@ -59,11 +62,24 @@ pub fn to_engine(config:&ConfigData) -> (Tracer,Vec::<[Vec3;3]>)
     let up        = Vec3::new( config.camera.up.0, config.camera.up.1 , config.camera.up.2 );
     let fov       = config.camera.fov;
 
-    let tracer    = Tracer::new(
-                        EngineCam::new(&origin,&direction,&up,fov),
-                        config.camera.screen.width,
-                        config.camera.screen.height
-                    );
+    let tracer    = Tracer{
+                        cam:EngineCam::new(&origin,&direction,&up,fov),
+                        screen:(
+                            config.camera.screen.width,
+                            config.camera.screen.height
+                        ),
+                        light:Vec3::new(
+                            config.scene.light_direction.0,
+                            config.scene.light_direction.1,
+                            config.scene.light_direction.2
+                        ),
+                        background:Pixel{
+                            0:config.scene.background_color.0,
+                            1:config.scene.background_color.1,
+                            2:config.scene.background_color.2,
+                            3:config.scene.background_color.3
+                        }
+                    };
 
     let mut mesh  = Vec::<[Vec3;3]>::with_capacity(config.scene.faces.len());
 

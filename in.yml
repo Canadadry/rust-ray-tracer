@@ -7,7 +7,10 @@ camera:
     width:  400
     height: 300
 
+
 scene:
+  light_direction : [   5 ,   5 ,  -5 ]
+  background_color : [0,0,255,255]
   vertices: 
     - [1.155947  , -0.932858 , -0.586609 ]
     - [1.146509  , 1.375757  , -0.341774 ]

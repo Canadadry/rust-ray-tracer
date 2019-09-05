@@ -5,7 +5,7 @@ use crate::math::matrix3::Mat3;
 use indicatif::{ProgressBar, ProgressStyle};
 
 #[derive(Copy, Clone)]
-pub struct Pixel(u8,u8,u8,u8);
+pub struct Pixel(pub u8,pub u8,pub u8,pub u8);
 
 impl Pixel {
     pub fn white() -> Pixel { Pixel(255,255,255,255)}
@@ -21,18 +21,12 @@ impl Pixel {
 }
 pub struct Tracer{
 	pub cam:Camera,
-	pub screen:(usize,usize)
+	pub screen:(usize,usize),
+	pub light: Vec3,
+	pub background: Pixel
 }
 
 impl Tracer{
-
-	pub fn new(cam:Camera,width:usize,height:usize) -> Tracer
-	{
-		Tracer{
-			cam,
-			screen:(width,height)
-		}
-	}
 
 	fn triangle_intersect(triangle:&[Vec3;3],origin:&Vec3,ray:&Vec3) -> bool
 	{
@@ -69,13 +63,13 @@ impl Tracer{
 		}
 	}
 
-	fn compute_color(triangle:&[Vec3;3]) -> Pixel
+	fn compute_color(&self,triangle:&[Vec3;3]) -> Pixel
 	{
 		let axe1   = triangle[1].sub(&triangle[0]);
 		let axe2   = triangle[2].sub(&triangle[0]);
 		let normal = axe1.cross(&axe2).normalize();
 
-		let ligh_direction = Vec3::new(5.0,5.0,-5.0).normalize();
+		let ligh_direction = self.light.normalize();
 
 		Pixel::gray(ligh_direction.dot(&normal))
 	}
@@ -115,8 +109,8 @@ impl Tracer{
 					}
 				}
 				match closest{
-					None           => out.push(Pixel::blue()),
-					Some(triangle) => out.push(Tracer::compute_color(triangle))
+					None           => out.push(self.background),
+					Some(triangle) => out.push(self.compute_color(triangle))
 				}
 				
 				rendered_ray += 1;
